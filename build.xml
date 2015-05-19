@@ -1,0 +1,63 @@
+<project name="translatingMessenger" default="compile" basedir = ".">
+	 <description> Ant build file </description>
+
+<!-- set global properties for this build -->
+
+ <property name="src" location="src"/>
+
+ <property name="bin" location="bin"/>
+ <property name="lib" location="lib"/>
+
+
+ 
+<target name="init">
+
+	<tstamp/>
+
+	<mkdir dir="${bin}"/>
+
+	<!--<classpath location = "${lib}/microsoft-translator-java-api-0.6.2-jar-with-dependencies.jar"/> -->
+
+</target>
+
+
+
+<target name="compile" depends="init" description="compile the source " >
+
+
+
+	 <javac includeantruntime="false"
+
+		 srcdir="${src}"
+
+		 destdir="${bin}"
+		
+		 debug="on">
+
+		<classpath location = "${lib}/microsoft-translator-java-api-0.6.2-jar-with-dependencies.jar"/>
+
+		 
+
+	 </javac>
+		<jar destfile='${bin}/lib-jars.jar'>
+		  <zipgroupfileset dir="${lib}">
+   		  <include name="**/*.jar" />
+ 		  </zipgroupfileset>
+		</jar>
+
+	<jar destfile='translatingMessenger.jar' basedir='${bin}'>
+	  <!-- using zipfileset we can filter on entries in the one file -->
+  		 <zipfileset src='${bin}/lib-jars.jar'>
+		<exclude name="META-INF/MANIFEST.MF"/>
+		 </zipfileset>
+   		 <manifest>
+       			 <attribute name="Main-Class" value="Translator"/>
+  		</manifest>      
+	</jar>
+
+
+
+</target>
+
+</project>
+
