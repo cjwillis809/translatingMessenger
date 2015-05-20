@@ -29,9 +29,12 @@ public class Translator {
 
 		}
 		
-		client c = new client(serverIP, ss);//handles the connection to the server
-		Thread cl = new Thread(c);
-		c.run();
+		clientWriter cw = new clientWriter(serverIP, ss);//creates a connection to the server for sending messages
+		clientReader cr = new clientReader(serverIP, ss);//creates a connection to ther server for reading messages
+		Thread crt = new Thread(cr);
+		Thread cwt = new Thread(cw);
+		cwt.run();
+		crt.run();
 		
 		CCtranslator t = new CCtranslator("TranslatingMessenger","YY4h0AMA9M4q/3Ty52plCUCU998eE3qHAmwk/7Y8P4c=");
 		
@@ -41,7 +44,7 @@ public class Translator {
 		
 		System.out.print("\nEnter your username: ");
 		String username = scan.nextLine();
-		c.setUserName(username);//sends the username to the server
+		cw.setUserName(username);//sends the username to the server
 		System.out.print("Enter your language (type -o for options): ");
 		String lang1 = scan.nextLine();
 		if (lang1.equals("-o")){
