@@ -28,14 +28,11 @@ public class Translator {
 
 
 		}
-		try{
-			Socket socket = new Socket(serverIP, ss);//opening socket to server specified in the args	
-		}
-		catch(Exception e){
-			System.out.println("Connection refused: server not  accepting connection on this port");
-			System.exit(0);
-		}
-
+		
+		client c = new client(serverIP, ss);//handles the connection to the server
+		Thread cl = new Thread(c);
+		c.run();
+		
 		CCtranslator t = new CCtranslator("TranslatingMessenger","YY4h0AMA9M4q/3Ty52plCUCU998eE3qHAmwk/7Y8P4c=");
 		
 		Scanner scan = new Scanner(System.in);
@@ -44,7 +41,7 @@ public class Translator {
 		
 		System.out.print("\nEnter your username: ");
 		String username = scan.nextLine();
-		
+		c.setUserName(username);//sends the username to the server
 		System.out.print("Enter your language (type -o for options): ");
 		String lang1 = scan.nextLine();
 		if (lang1.equals("-o")){
