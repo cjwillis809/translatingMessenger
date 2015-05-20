@@ -39,15 +39,17 @@ public class Translator {
 		else{
 			ss = Integer.parseInt(args[1]);
 			serverIP = InetAddress.getByName(args[0]);
+			System.out.println(serverIP);
 		}
 		
 		clientWriter cw = new clientWriter(serverIP, ss);//creates a connection to the server for sending messages
 		clientReader cr = new clientReader(serverIP, ss);//creates a connection to ther server for reading messages
 		Thread crt = new Thread(cr);
 		Thread cwt = new Thread(cw);
-		cwt.run();
-		crt.run();
-		
+		System.out.println("Starting threads");
+//		cwt.run();
+//		crt.run();
+//		cwt.run();		
 		CCtranslator t = new CCtranslator("TranslatingMessenger","YY4h0AMA9M4q/3Ty52plCUCU998eE3qHAmwk/7Y8P4c=");
 		
 		Scanner scan = new Scanner(System.in);
@@ -56,7 +58,7 @@ public class Translator {
 		
 		System.out.print("\nEnter your username: ");
 		String username = scan.nextLine();
-		cw.setUserName(username);//sends the username to the server
+//		cw.setUserName(username);//sends the username to the server
 		
 		System.out.print("Enter your language (type -o for options): ");
 		String lang1 = scan.nextLine();
@@ -79,9 +81,10 @@ public class Translator {
 		System.out.println(Translate.execute(theirInfo,Language.ENGLISH,t.from));
 		
 		System.out.print("\n[" + username + "]: "); 
-		String s = scan.nextLine();
-		String r = t.translate(s);
-		System.out.println(r);
+		cwt.run();
+//		String s = scan.nextLine();
+//		String r = t.translate(s);
+//		System.out.println(r);
 		
 		scan.close();
 	}

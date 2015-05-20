@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.*;
 import java.util.Scanner;
+import java.io.ObjectInputStream;
 
 /*
 /Server Client Protocol:
@@ -27,27 +28,31 @@ import java.util.Scanner;
 class clientWriter implements Runnable{
 
 
-	private int port = 0;
-	private InetAddress add = null;
+	private int portn = 0;
+	private InetAddress addr = null;
 	private PrintWriter output;
-    	private BufferedReader input;
+    	private ObjectInputStream input;
 	public String pname;
 	private Socket socket;
 	clientWriter(InetAddress tdd, int port){
-		this.port = port;
-		this.add = add;
+		portn = port;
+		addr = tdd;
 	}
 	
 
 	void connect(){	
 		try{
-			socket = new Socket(this.add, this.port);//opening socket to server specified in the args       
+			System.out.println(addr+":"+portn);
+			socket = new Socket(addr, portn);//opening socket to server specified in the args       
 			output= new PrintWriter(socket.getOutputStream(),true);
-	                input= new BufferedReader( new InputStreamReader( socket.getInputStream()));
+	                //input= new ObjectInputStream( socket.getInputStream());
+	
+//			output.println("Hey");
+			//System.out.println("cw connected");
 
 		}
 		catch(Exception e){
-			System.out.println("The Server has refused the connection");
+			System.out.println("The Server has refused the connection cw");
 			System.exit(0);
 			}
 		
@@ -66,18 +71,21 @@ class clientWriter implements Runnable{
 //	}
 	void sendMessage(String s){
 		output.println(s);
-
+		output.flush();
 	}
 
 			
 	public void run(){
-		this.connect();
+		connect();
 		Scanner scan = new Scanner(System.in);
+		String line;
 		while(true){
-			System.out.print(">> ");
-			String message = scan.nextLine();
-			this.sendMessage(message);
+
+		System.out.println(">> ");
+		line = scan.nextLine();
+		output.println(line);
 		}
 	}
-
 }
+
+

@@ -28,23 +28,25 @@ import java.util.Scanner;
 class clientReader implements Runnable {
 
 
-	private int port = 0;
-	private InetAddress add = null;
+	private int portn = 0;
+	private InetAddress addr = null;
 	private PrintWriter output;
     	private BufferedReader input;
 	public String pname;
 	private Socket socket;
 	clientReader(InetAddress tdd, int port)throws IOException{
-		this.port = port;
-		this.add = add;
+		portn = port;
+		addr = tdd;
 	}
 	
 
 	void connect()throws IOException{
-		try{
-		socket = new Socket(this.add, this.port);//opening socket to server specified in the args       
+		try{	
+	//		System.out.println(port);
+			socket = new Socket(addr,portn);//opening socket to server specified in the args
+			       
 		} catch(Exception e){
-				System.out.println("The Server has refused the connection");
+				System.out.println("The Server has refused the connection cr");
 				System.exit(0);
 			}
 		output= new PrintWriter(socket.getOutputStream(),true);
@@ -69,23 +71,35 @@ class clientReader implements Runnable {
 			
 	public void run(){
 		try{
-			this.connect();
-			this.getUserName();
+			connect();
+		//	this.getUserName();
 		}
 		catch(Exception e){
 		System.out.println(e);
 		}
-		Scanner scan = new Scanner(System.in);
+		//Scanner scan = new Scanner(System.in);
 		String line;//received
-		try{
-			while((line = input.readLine()) != null && line.length() > 0){
-				System.out.print(">> ");
-				System.out.println(line);
+		while(true){
+			try{	
+				String m = input.readLine();
+				if(m!=null &&m.length() > 0){
+					System.out.println(">> "+input.readLine());
+				}
 			}
+			catch(Exception e)
+			{}
 		}
-		catch(Exception e){
-			System.out.println(e);
-		}
+//		while(true){
+//			try{//loop reading inputs
+//				while((line = input.readLine()) != null && line.length() > 0){
+//					System.out.print(">> ");
+//					System.out.println(line);
+//				}
+//			}
+//			catch(Exception e){
+//				System.out.println(e);
+//			}
+	//	}
 	}
 
 }
