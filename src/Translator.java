@@ -14,19 +14,30 @@ public class Translator {
             System.out.println(lang.name());
 	}
 	
+	 public static Language validate(String language)
+	 {
+		 for (Language item : Language.values())
+			 if (item.name().equalsIgnoreCase(language))
+				 return item;
+	        return null;
+	}
+
+	public static boolean isValidLanguage(String language)
+	{
+		return (validate(language) != null);
+	}
+	    
 	public static void main(String[] args) throws Exception {
 		int ss = 0;	
 		InetAddress serverIP = null;
 		if(args.length != 2){
 			System.out.println("Usage: java -jar translatingMessenger.jar {server ip address}{server socket}");
 			System.exit(0);
-
 		}
+		
 		else{
 			ss = Integer.parseInt(args[1]);
 			serverIP = InetAddress.getByName(args[0]);
-
-
 		}
 		
 		clientWriter cw = new clientWriter(serverIP, ss);//creates a connection to the server for sending messages
@@ -45,21 +56,28 @@ public class Translator {
 		System.out.print("\nEnter your username: ");
 		String username = scan.nextLine();
 		cw.setUserName(username);//sends the username to the server
+		
 		System.out.print("Enter your language (type -o for options): ");
 		String lang1 = scan.nextLine();
 		if (lang1.equals("-o")){
 			listLanguages();
+		}
+		while (!isValidLanguage(lang1)){
 			System.out.print("\nEnter your language (type -o for options): ");
 			lang1 = scan.nextLine();
 		}
+		
 		t.setFromLang(Language.valueOf(lang1.toUpperCase()));
-		System.out.println("Your language: " + t.from.name());
 		
-		t.setToLang(Language.SPANISH); //temporary
+		t.setToLang(Language.SPANISH);
 		
-		System.out.println("\n[User] has entered the conversation \nTheir language: " + t.to.name()); //translate!!!!!!
+		String yourInfo = "Your language: " + t.from.name();
+		System.out.println(Translate.execute(yourInfo,Language.ENGLISH,t.from));
 		
-		System.out.print("\n[You]: "); 
+		String theirInfo = "\n[User] has entered the conversation \nTheir language: " + t.to.name();
+		System.out.println(Translate.execute(theirInfo,Language.ENGLISH,t.from));
+		
+		System.out.print("\n[" + username + "]: "); 
 		String s = scan.nextLine();
 		String r = t.translate(s);
 		System.out.println(r);
