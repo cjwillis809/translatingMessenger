@@ -8,6 +8,11 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.*;
+import java.util.Scanner;
+
 /*
 /Server Client Protocol:
 /1. Set username. Client sends username to server. Servers stores the username and associates it with the client socket
@@ -24,8 +29,8 @@ class clientWriter implements Runnable{
 
 	private int port = 0;
 	private InetAddress add = null;
-	private DataOutputStream output;
-    	private DataInputStream input;
+	private PrintWriter output;
+    	private BufferedReader input;
 	public String pname;
 	private Socket socket;
 	clientWriter(InetAddress tdd, int port){
@@ -37,27 +42,30 @@ class clientWriter implements Runnable{
 	void connect(){	
 		try{
 			socket = new Socket(this.add, this.port);//opening socket to server specified in the args       
+			output= new PrintWriter(socket.getOutputStream(),true);
+	                input= new BufferedReader( new InputStreamReader( socket.getInputStream()));
+
 		}
 		catch(Exception e){
 			System.out.println("The Server has refused the connection");
 			System.exit(0);
 			}
-		output= new DataOutputStream(socket.getOutputStream());
-	        input= new DataInputStream(socket.getInputStream());
+		
+
         } 
 	
 
 	public void setUserName(String uname){
-	output.printUTF(uname);
+	output.println(uname);
 	
 
 	}
-	public String getUserName(){
- 		pname = input.readString();
-		return pname;
-	}
+//	public String getUserName(){
+ //		pname = input.readString();
+//		return pname;
+//	}
 	void sendMessage(String s){
-		ouput.writeUTF(s);
+		output.println(s);
 
 	}
 
@@ -67,7 +75,7 @@ class clientWriter implements Runnable{
 		Scanner scan = new Scanner(System.in);
 		while(true){
 			System.out.print(">> ");
-			String message = scan.readLine();
+			String message = scan.nextLine();
 			this.sendMessage(message);
 		}
 	}
