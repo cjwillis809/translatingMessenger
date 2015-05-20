@@ -1,6 +1,10 @@
 import java.util.Scanner;
 
 import com.memetix.mst.language.Language;
+import java.net.InetAddress;
+import java.net.Socket;
+
+
 
 public class Translator {
 		
@@ -11,8 +15,27 @@ public class Translator {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		
-		
+		int ss = 0;	
+		InetAddress serverIP = null;
+		if(args.length != 2){
+			System.out.println("Usage: java -jar translatingMessenger.jar {server ip address}{server socket}");
+			System.exit(0);
+
+		}
+		else{
+			ss = Integer.parseInt(args[1]);
+			serverIP = InetAddress.getByName(args[0]);
+
+
+		}
+		try{
+			Socket socket = new Socket(serverIP, ss);//opening socket to server specified in the args	
+		}
+		catch(Exception e){
+			System.out.println("Connection refused: server not  accepting connection on this port");
+			System.exit(0);
+		}
+
 		CCtranslator t = new CCtranslator("TranslatingMessenger","YY4h0AMA9M4q/3Ty52plCUCU998eE3qHAmwk/7Y8P4c=");
 		
 		Scanner scan = new Scanner(System.in);

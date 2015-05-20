@@ -6,6 +6,7 @@ import com.memetix.mst.language.Language;
 import com.memetix.mst.translate.Translate;
 
 public class CCtranslator {
+		
 	  
 	  Language from = null;
 	  Language to = null;
