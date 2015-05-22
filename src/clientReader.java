@@ -14,6 +14,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.*;
 import java.util.Scanner;
+import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.*;
 /*
 /Server Client Protocol:
 /1. Set username. Client sends username to server. Servers stores the username and associates it with the client socket
@@ -34,9 +37,15 @@ class clientReader implements Runnable {
     	private BufferedReader input;
 	public String pname;
 	private Socket socket;
+	private JFrame jFrame;
 	clientReader(InetAddress tdd, int port)throws IOException{
 		portn = port;
-		addr = tdd;
+		addr = tdd;	
+//		jFrame = new JFrame();
+//		JTextArea jta = new JTextArea();
+//		jta.append("Received Messages appear here");
+//		jFrame.add(jta);	
+//		jFrame.show();
 	}
 	
 
@@ -70,6 +79,12 @@ class clientReader implements Runnable {
 
 			
 	public void run(){
+		jFrame = new JFrame();
+                JTextArea jta = new JTextArea();
+                jta.append("Received Messages appear here");
+                jFrame.add(jta);
+                jFrame.show();
+
 		try{
 			connect();
 		//	this.getUserName();
@@ -79,27 +94,23 @@ class clientReader implements Runnable {
 		}
 		//Scanner scan = new Scanner(System.in);
 		String line;//received
-		while(true){
+		//while(true){
 			try{	
-				String m = input.readLine();
-				if(m!=null &&m.length() > 0){
-					System.out.println(">> "+input.readLine());
-				}
+				while(true){
+					if(input.ready()){
+						line =input.readLine();
+						jta.append(line+"\n");
+					//	jFrame.show();
+
+					}
+					else{}
+
+			}
 			}
 			catch(Exception e)
 			{}
-		}
-//		while(true){
-//			try{//loop reading inputs
-//				while((line = input.readLine()) != null && line.length() > 0){
-//					System.out.print(">> ");
-//					System.out.println(line);
-//				}
-//			}
-//			catch(Exception e){
-//				System.out.println(e);
-//			}
-	//	}
+		//}
+
 	}
 
 }

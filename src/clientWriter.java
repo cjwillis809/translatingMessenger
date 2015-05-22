@@ -79,12 +79,22 @@ class clientWriter implements Runnable{
 		connect();
 		Scanner scan = new Scanner(System.in);
 		String line;
-		while(true){
 
-		System.out.println(">> ");
-		line = scan.nextLine();
-		output.println(line);
+	try{
+
+		while(true){					
+			System.out.print(">> ");
+			line = scan.nextLine();
+			sendMessage(line);
 		}
+	}	
+	catch(Exception e){}
+		//while(true){
+
+		//	System.out.println(">> ");
+		//		line = scan.nextLine();
+		//	utput.println(line);
+		//}
 	}
 }
 

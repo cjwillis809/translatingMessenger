@@ -29,6 +29,20 @@ public class Translator {
 	}
 	    
 	public static void main(String[] args) throws Exception {
+                try{
+                        System.out.println(addr+":"+portn);
+                        socket = new Socket(addr, portn);//opening socket to server specified in the args       
+                        output= new PrintWriter(socket.getOutputStream(),true);
+
+                }
+                catch(Exception e){
+                        System.out.println("The Server has refused the connection cw");
+                        System.exit(0);
+                }
+
+
+
+
 		int ss = 0;	
 		InetAddress serverIP = null;
 		if(args.length != 2){
@@ -46,10 +60,7 @@ public class Translator {
 		clientReader cr = new clientReader(serverIP, ss);//creates a connection to ther server for reading messages
 		Thread crt = new Thread(cr);
 		Thread cwt = new Thread(cw);
-		System.out.println("Starting threads");
-//		cwt.run();
-//		crt.run();
-//		cwt.run();		
+		System.out.println("Starting threads");		
 		CCtranslator t = new CCtranslator("TranslatingMessenger","YY4h0AMA9M4q/3Ty52plCUCU998eE3qHAmwk/7Y8P4c=");
 		
 		Scanner scan = new Scanner(System.in);
@@ -72,19 +83,13 @@ public class Translator {
 		
 		t.setFromLang(Language.valueOf(lang1.toUpperCase()));
 		
-		t.setToLang(Language.SPANISH);
-		
 		String yourInfo = "Your language: " + t.from.name();
 		System.out.println(Translate.execute(yourInfo,Language.ENGLISH,t.from));
-		
-		String theirInfo = "\n[User] has entered the conversation \nTheir language: " + t.to.name();
-		System.out.println(Translate.execute(theirInfo,Language.ENGLISH,t.from));
-		
+				
 		System.out.print("\n[" + username + "]: "); 
+		
+		crt.run();
 		cwt.run();
-//		String s = scan.nextLine();
-//		String r = t.translate(s);
-//		System.out.println(r);
 		
 		scan.close();
 	}
