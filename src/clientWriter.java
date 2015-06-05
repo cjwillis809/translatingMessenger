@@ -12,14 +12,15 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.*;
 import java.util.Scanner;
+import java.io.ObjectInputStream;
 
 /*
 /Server Client Protocol:
-/1. Set username. Client sends username to server. Servers stores the username and associates it with the client socket
-/2. Get username. Client requests username from server that the other user is using.
-/3 or 4. Send Message to server, server relays to other client 
-/3 or 4. receive message from server that was relayed from other client
-/
+/1.main class provides socket to clientReader and writer
+/2. both threads run
+/3. messages are sent as strings in the format "[username] message"
+/4. server relays message to other user. 
+/5. client translates all receieved text to chosen language
 */
 
 
@@ -27,57 +28,54 @@ import java.util.Scanner;
 class clientWriter implements Runnable{
 
 
-	private int port = 0;
-	private InetAddress add = null;
+	private int portn = 0;
+	private InetAddress addr = null;
 	private PrintWriter output;
-    	private BufferedReader input;
-	public String pname;
+    private ObjectInputStream input;
 	private Socket socket;
-	clientWriter(InetAddress tdd, int port){
-		this.port = port;
-		this.add = add;
-	}
+	private String username;
+	
+	clientWriter(Socket s,String uname){
+		socket  = s;
+		username = uname;
+	} 
 	
 
-	void connect(){	
-		try{
-			socket = new Socket(this.add, this.port);//opening socket to server specified in the args       
-			output= new PrintWriter(socket.getOutputStream(),true);
-	                input= new BufferedReader( new InputStreamReader( socket.getInputStream()));
-
-		}
-		catch(Exception e){
-			System.out.println("The Server has refused the connection");
-			System.exit(0);
-			}
-		
-
-        } 
-	
-
-	public void setUserName(String uname){
-	output.println(uname);
-	
-
-	}
+//	public void setUserName(String uname){
+//	output.println(uname);
+//	
+//
+//	}
 //	public String getUserName(){
  //		pname = input.readString();
 //		return pname;
 //	}
 	void sendMessage(String s){
 		output.println(s);
-
+		output.flush();
 	}
 
 			
 	public void run(){
-		this.connect();
-		Scanner scan = new Scanner(System.in);
-		while(true){
-			System.out.print(">> ");
-			String message = scan.nextLine();
-			this.sendMessage(message);
+		try{	
+			output = new PrintWriter(socket.getOutputStream());
 		}
-	}
+		catch(Exception e){
+		System.out.println(e);
+		}
+		Scanner scan = new Scanner(System.in);
+		String line;
 
+		try{
+	
+			while(true){					
+				System.out.print(">> ");
+				line = scan.nextLine();
+				sendMessage("["+username+"]: "+line);
+			}
+		}	
+		catch(Exception e){
+			System.out.println(e);
+		}	
+	}
 }

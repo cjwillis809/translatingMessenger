@@ -14,6 +14,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.*;
 import java.util.Scanner;
+import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.*;
 /*
 /Server Client Protocol:
 /1. Set username. Client sends username to server. Servers stores the username and associates it with the client socket
@@ -28,26 +31,22 @@ import java.util.Scanner;
 class clientReader implements Runnable {
 
 
-	private int port = 0;
-	private InetAddress add = null;
+	private int portn = 0;
+	private InetAddress addr = null;
 	private PrintWriter output;
-    	private BufferedReader input;
+    private BufferedReader input;
 	public String pname;
 	private Socket socket;
-	clientReader(InetAddress tdd, int port)throws IOException{
-		this.port = port;
-		this.add = add;
+	CCtranslator t;
+	private JFrame jFrame;
+	clientReader(Socket s, CCtranslator tr)throws IOException{
+		socket = s;
+		t = tr;
 	}
 	
 
 	void connect()throws IOException{
-		try{
-		socket = new Socket(this.add, this.port);//opening socket to server specified in the args       
-		} catch(Exception e){
-				System.out.println("The Server has refused the connection");
-				System.exit(0);
-			}
-		output= new PrintWriter(socket.getOutputStream(),true);
+		//output= new PrintWriter(socket.getOutputStream(),true);
 	        input= new BufferedReader( new InputStreamReader( socket.getInputStream()));
         } 
 	
@@ -68,25 +67,42 @@ class clientReader implements Runnable {
 
 			
 	public void run(){
+		jFrame = new JFrame();
+                JTextArea jta = new JTextArea();
+                jta.append(t.translate("Received Messages: \n"));
+                jFrame.add(jta);
+                jFrame.setSize(500,500);
+                jFrame.show();
+
 		try{
-			this.connect();
-			this.getUserName();
+			connect();
+		//	this.getUserName();
 		}
 		catch(Exception e){
 		System.out.println(e);
 		}
-		Scanner scan = new Scanner(System.in);
+		//Scanner scan = new Scanner(System.in);
 		String line;//received
-		try{
-			while((line = input.readLine()) != null && line.length() > 0){
-				System.out.print(">> ");
-				System.out.println(line);
+		//while(true){
+			try{	
+				while(true){
+					if(input.ready()){
+						line =input.readLine();
+						line = t.translate(line);
+						jta.append(line+"\n");
+					//	jFrame.show();
+
+					}
+					else{}
+
 			}
-		}
-		catch(Exception e){
-			System.out.println(e);
-		}
+			}
+			catch(Exception e)
+			{
+				System.out.println(e);
+			}
+		//}
+
 	}
 
 }
-
